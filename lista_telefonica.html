@@ -14,9 +14,9 @@
         {
             $scope.app = "Lista Telefônica";
             $scope.contatos = [
-                {nome: "Lucas", telefone: "11111321"},
-                {nome: "Bruno", telefone: "11232456"},
-                {nome: "Pedro", telefone: "48745656"}
+                {nome: "Lucas", telefone: "11111321", cor: "blue"},
+                {nome: "Bruno", telefone: "11232456", cor: "yellow"},
+                {nome: "Pedro", telefone: "48745656", cor: "red"}
             ];
             $scope.operadoras = [
                 {nome: "Oi", codigo: 14, categoria: "Celular"},
@@ -78,7 +78,7 @@
 <body ng-controller="LitaTelefonicaCtrl">
     <div class="jumbotron">
         <h3>{{app}}</h3>
-        <table class="table">
+        <table class="table" ng-show="contatos.length > 0">
             <tr>
                 <th>
                     <input 
@@ -100,6 +100,9 @@
                 <td>{{contato.nome}}</td>
                 <td>{{contato.telefone}}</td>
                 <td>{{contato.operadora.nome}}</td>
+                <td>
+                    <div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.cor}"></div>
+                </td>
             </tr>
         </table>
         <input type="text" ng-model="contato.nome"  class="form-control"/>
@@ -117,14 +120,16 @@
             type="button" 
             class="btn btn-primary btn-block" 
             ng-click="adicionarContato(contato)"
-            ng-disabled="!contato.nome || !contato.telefone"
+            ng-disabled="!contato.nome || !contato.telefone || !contato.operadora"
         >Adicionar contato</button>
+        <!--ng-disabled="!isContatoSelecionados(contatos)" só habilita o botão se tiver contatos selecionados-->
         <button 
             type="button" 
             class="btn btn-danger btn-block" 
             ng-click="apagarContato(contatos)"
-            ng-disabled="!isContatoSelecionados(contatos)"
+            ng-show="isContatoSelecionados(contatos)"
         >Apagar contatos</button>
     </div>
+    <div ng-include="'footer.html'"></div>
 </body>
 </html>
