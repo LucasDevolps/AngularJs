@@ -6,74 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Telefonica</title>
     <script src="angular-1.8.2/angular.js"></script>
+    <script src="angular-1.8.2/angular-messages.js"></script>
     <link rel="stylesheet" href="bootstrap.css">
-    <script>
-        angular.module("ListaTelefonica", []);
-        angular.module("ListaTelefonica")
-        .controller("LitaTelefonicaCtrl",function($scope)
-        {
-            $scope.app = "Lista Telefônica";
-            $scope.contatos = [
-                {nome: "Lucas", telefone: "11111321", cor: "blue"},
-                {nome: "Bruno", telefone: "11232456", cor: "yellow"},
-                {nome: "Pedro", telefone: "48745656", cor: "red"}
-            ];
-            $scope.operadoras = [
-                {nome: "Oi", codigo: 14, categoria: "Celular"},
-                {nome: "Vivo", codigo: 15, categoria: "Celular"},
-                {nome: "Tim", codigo: 41, categoria: "Celular"},
-                {nome: "GVT", codigo:25, categoria: "Fixo"},
-                {nome: "Embratel", codigo: 21, categoria: "Fixo"}
-            ]
-            $scope.adicionarContato = function(contato){
-                $scope.contatos.push(angular.copy(contato))
-                delete $scope.contato
-            };
-            $scope.classe1 = "selecionado";
-            $scope.classe2 = "negrito";
-            $scope.allCx = function(){
-               for(i = 0; i < $scope.contatos.length; i++){
-                   $scope.contatos[i].selecionado = !$scope.contatos[i].selecionado
-               }
-            }
-            /*minha tentativa*/
-            $scope.apagarContato = function(contatos){
-                /*retornando para o array os não selecionados*/
-                $scope.contatos = contatos.filter(function(contato){
-                    if(!contato.selecionado) return contato
-                });
-                
-            }
-            $scope.isContatoSelecionados = function(contatos){
-                return contatos.some(function(contato){
-                    return contato.selecionado;
-                });
-            }
-        });
-    </script>
-    <style>
-        .jumbotron{
-            width: 65%;
-            margin: auto;
-            margin-top: 7vw;
-            text-align: center;
-        }
-        .jumbotron h3{
-            margin-bottom: 5%;
-        }
-        .jumbotron .form-control{
-            margin-bottom: 1%;
-        }
-        .jumbotron select.form-control{
-            text-align-last:center
-        }
-        .selecionado{
-            background: yellow;
-        }
-        .negrito{
-            font-weight: bold;
-        }
-    </style>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body ng-controller="LitaTelefonicaCtrl">
     <div class="jumbotron">
@@ -105,29 +41,46 @@
                 </td>
             </tr>
         </table>
-        <input type="text" ng-model="contato.nome"  class="form-control"/>
-        <input type="text" ng-model="contato.telefone"  class="form-control"/>
-        <select 
-            class="form-control"
-            ng-model="contato.operadora" 
-            ng-options="operadora.nome group by operadora.categoria for operadora in operadoras | orderBy:operadora.categoria"
-        >
-        <option value="" disabled hidden>
-            >> Selecione uma operadora <<
-        </option>
-        </select>
+        <form action="" name="contatoForm">
+            <input type="text" ng-model="contato.nome"  class="form-control" name="nome" ng-required="true" ng-minlength="10"/>
+            <input type="text" ng-model="contato.telefone"  class="form-control" name="telefone" id="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
+            <select 
+                class="form-control"
+                ng-model="contato.operadora" 
+                ng-options="operadora.nome group by operadora.categoria for operadora in operadoras | orderBy:operadora.categoria"
+            >
+            <option value="" disabled hidden>
+                >> Selecione uma operadora <<
+            </option>
+            </select>
+        </form>
+        <div ng-messages="contatoForm.nome.$error" class="alert alert-danger">
+            <div ng-message="required">
+                Por favor, preencha o nome!
+            </div>
+            <div ng-message="minlength">
+                O campo nome deve ter no mínimo 10 caracteres.
+            </div>
+        </div>
+        <!-- $dirty, se já foi tocado -->
+        <div ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty" class="alert alert-danger">
+            Por favor, preencha o telefone!
+        </div>
+        <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+            O campo telefone deve ter o formato DDDDD-DDDD
+        </div>
         <button 
             type="button" 
             class="btn btn-primary btn-block" 
             ng-click="adicionarContato(contato)"
-            ng-disabled="!contato.nome || !contato.telefone || !contato.operadora"
+            ng-disabled="contatoForm.$invalid"
         >Adicionar contato</button>
         <!--ng-disabled="!isContatoSelecionados(contatos)" só habilita o botão se tiver contatos selecionados-->
         <button 
             type="button" 
             class="btn btn-danger btn-block" 
             ng-click="apagarContato(contatos)"
-            ng-show="isContatoSelecionados(contatos)"
+            ng-if="isContatoSelecionados(contatos)"
         >Apagar contatos</button>
     </div>
     <div ng-include="'footer.html'"></div>

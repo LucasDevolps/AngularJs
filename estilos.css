@@ -1,0 +1,23 @@
+.jumbotron{
+    width: 65%;
+    margin: auto;
+    margin-top: 7vw;
+    text-align: center;
+    max-width: 560px;
+    min-width: 490px;
+}
+.jumbotron h3{
+    margin-bottom: 5%;
+}
+.jumbotron .form-control{
+    margin-bottom: 1%;
+}
+.jumbotron select.form-control{
+    text-align-last:center
+}
+.selecionado{
+    background: yellow;
+}
+.negrito{
+    font-weight: bold;
+}
