@@ -1,19 +1,19 @@
 angular.module("ListaTelefonica", ["ngMessages"]);
 angular.module("ListaTelefonica")
-.controller("LitaTelefonicaCtrl",function($scope)
+.controller("LitaTelefonicaCtrl",function($scope, $filter)
 {
     $scope.app = "Lista Telefônica";
     $scope.contatos = [
-        {nome: "Lucas", telefone: "11111321", cor: "blue"},
-        {nome: "Bruno", telefone: "11232456", cor: "yellow"},
-        {nome: "Pedro", telefone: "48745656", cor: "red"}
+        {nome: $filter('uppercase')("Lucas"), telefone: "11111321", data: new Date(), operadora: {nome: "Oi", codigo: 14, categoria: "Celular"},cor: "blue"},
+        {nome: "Bruno", telefone: "11232456", data: new Date(), operadora: {nome: "Vivo", codigo: 15, categoria: "Telefone"},cor: "yellow"},
+        {nome: "Pedro", telefone: "48745656", data: new Date(), operadora: {nome: "Tim", codigo: 41, categoria: "Celular"},cor: "red"}
     ];
     $scope.operadoras = [
-        {nome: "Oi", codigo: 14, categoria: "Celular"},
-        {nome: "Vivo", codigo: 15, categoria: "Celular"},
-        {nome: "Tim", codigo: 41, categoria: "Celular"},
-        {nome: "GVT", codigo:25, categoria: "Fixo"},
-        {nome: "Embratel", codigo: 21, categoria: "Fixo"}
+        {nome: "Oi", codigo: 14, categoria: "Celular", preco: 2},
+        {nome: "Vivo", codigo: 15, categoria: "Celular", preco: 1},
+        {nome: "Tim", codigo: 41, categoria: "Celular", preco: 3},
+        {nome: "GVT", codigo:25, categoria: "Fixo", preco: 1},
+        {nome: "Embratel", codigo: 21, categoria: "Fixo", preco: 2}
     ];
     $scope.adicionarContato = function(contato){
         $scope.contatos.push(angular.copy(contato));
@@ -40,6 +40,10 @@ angular.module("ListaTelefonica")
         return contatos.some(function(contato){
             return contato.selecionado;
         });
+    }
+    $scope.ordenarPor = function(campo){
+        $scope.criterioDeOrdenacao = campo;
+        $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     }
 });
 /* Mascara  do telefone
